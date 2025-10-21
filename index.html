@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Matthew Schultz – Portfolio (Assignment 5)</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:#fdf7f1;
+      --card:#ffffff;
+      --text:#1a1a1a;
+      --muted:#4e5969;
+      --border:rgba(0,0,0,0.1);
+      --warm-1:255,214,165;
+      --warm-2:255,111,145;
+      --grad1:rgba(var(--warm-1),0.9);
+      --grad2:rgba(var(--warm-2),0.9);
+    }
+
+    body.dark {
+      --bg:#0c1222;
+      --card:#16213e;
+      --text:#f8f9ff;
+      --muted:#c8cde8;
+      --border:rgba(255,255,255,0.25);
+      --cool-1:82,138,255;
+      --cool-2:140,82,255;
+      --grad1:rgba(var(--cool-1),0.9);
+      --grad2:rgba(var(--cool-2),0.9);
+    }
+
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      background:var(--bg);
+      color:var(--text);
+      padding-top:92px;
+      transition:background .8s ease,color .8s ease;
+    }
+
+    .navbar-custom {
+      background:linear-gradient(90deg,var(--grad1),var(--grad2));
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+    }
+    .navbar-brand h1{font-family:"Poppins",sans-serif;}
+    body.dark .navbar-brand h1,body.dark .navbar-brand small{color:#fff;}
+
+    .card {
+      background:var(--card);
+      color:var(--text);
+      border:1px solid var(--border);
+      opacity:0;
+      transform:translateY(40px);
+      transition:opacity .6s,transform .6s,color .6s,background .6s;
+    }
+    .card.visible{opacity:1;transform:translateY(0);}
+    .table{background:var(--card)!important;color:var(--text)!important;}
+    .table th,.table td{color:var(--text)!important;}
+
+    /* Fix muted text colors for both themes */
+    .text-muted,
+    .small.text-muted,
+    small.text-muted {
+      color: var(--muted) !important;
+      transition: color 0.4s ease;
+    }
+
+    footer{background:linear-gradient(135deg,var(--grad1),var(--grad2));color:#222;}
+    body.dark footer{color:#fff;}
+
+    #customizationControls input[type="color"],
+    #customizationControls input[type="range"] {
+      width: 200px;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <h1 class="mb-0">Matthew Schultz</h1>
+          <small>Applied Computer Science • NAU</small>
+        </a>
+        <div class="ms-auto d-flex align-items-center gap-2">
+          <a id="downloadBtn" class="btn btn-primary">📄 Download Resume</a>
+          <button id="themeToggle" class="btn btn-outline-dark">🌙</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container py-4">
+    <section id="greeting" class="mb-5">
+      <div class="card text-center p-4 shadow-sm">
+        <h2 id="greetingText" class="h4 mb-0">Loading greeting...</h2>
+      </div>
+    </section>
+
+    <section id="add-skill" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-3">Add a New Skill</h2>
+        <div class="input-group">
+          <input id="newSkillInput" type="text" class="form-control" placeholder="Enter a skill">
+          <button id="addSkillBtn" class="btn btn-primary">Add Skill</button>
+        </div>
+      </div></div>
+    </section>
+
+    <section id="skills" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-3">Skills</h2>
+        <ul>
+          <li>HTML, CSS, JavaScript, Python</li>
+          <li>Bootstrap, GitHub, VS Code</li>
+        </ul>
+      </div></div>
+    </section>
+
+    <section id="education" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-3">Education</h2>
+        <div id="educationTableContainer"></div>
+      </div></div>
+    </section>
+
+    <section id="experience" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-3">Experience</h2>
+        <div id="experienceTableContainer"></div>
+      </div></div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="mb-5">
+      <h2 class="h4 mb-3">Projects</h2>
+      <div id="projectList" class="row g-4"></div>
+    </section>
+
+    <!-- Customization Controls -->
+    <section id="customizationControls" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-3">Customize Page Appearance</h2>
+        <div class="mb-2">
+          <label for="fontSizeRange">Font Size:</label>
+          <input type="range" id="fontSizeRange" min="12" max="22" value="16">
+        </div>
+        <div>
+          <label for="bgColorPicker">Background Color:</label>
+          <input type="color" id="bgColorPicker" value="#fdf7f1">
+        </div>
+      </div></div>
+    </section>
+
+    <section class="mb-4">
+      <div id="downloadCounterContainer" class="text-center"></div>
+    </section>
+  </main>
+
+  <footer class="py-3 text-center">
+    <small>&copy; 2025 Matthew Schultz • Designed with Bootstrap</small>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
